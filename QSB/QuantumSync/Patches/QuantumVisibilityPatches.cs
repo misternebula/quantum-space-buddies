@@ -1,6 +1,6 @@
 ﻿using QSB.Patches;
 using QSB.Player;
-using QSB.WorldSync;
+using QSB.Utility;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -22,10 +22,10 @@ namespace QSB.QuantumSync.Patches
 		}
 
 		public static void Shape_OnEnable(Shape __instance)
-			=> QSBWorldSync.RaiseEvent(__instance, "OnShapeActivated", __instance);
+			=> __instance.RaiseEvent("OnShapeActivated", __instance);
 
 		public static void Shape_OnDisable(Shape __instance)
-			=> QSBWorldSync.RaiseEvent(__instance, "OnShapeDeactivated", __instance);
+			=> __instance.RaiseEvent("OnShapeDeactivated", __instance);
 
 		// ShapeVisibilityTracker patches
 

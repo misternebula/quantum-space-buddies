@@ -59,10 +59,10 @@ namespace QSB.ProbeSync
 			Deactivate();
 		}
 
-		public bool IsRetrieving() 
+		public bool IsRetrieving()
 			=> IsLaunched() && _isRetrieving;
 
-		public bool IsLaunched() 
+		public bool IsLaunched()
 			=> gameObject.activeSelf;
 
 		public void HandleEvent(ProbeEvent probeEvent)

@@ -19,10 +19,9 @@ namespace QSB.Animation.Player.Thrusters
 			CreateThrusterFlameController(newVfx, player);
 
 			newVfx.transform.parent = player.Body.transform;
-			// Body isnt the actualy player body... it's the model... ;(
-			newVfx.transform.localPosition = new Vector3(0, 10.24412f, 2.268939f);
-			newVfx.transform.rotation = Quaternion.Euler(1.5f, 0, 0);
-			newVfx.transform.localScale = new Vector3(10, 10, 10);
+			newVfx.transform.localPosition = Vector3.zero;
+			newVfx.transform.rotation = Quaternion.Euler(0, 0, 0);
+			newVfx.transform.localScale = new Vector3(1, 1, 1);
 
 			// Deleted objects take 1 update to actually be deleted
 			QSBCore.UnityEvents.FireOnNextUpdate(() => newVfx.SetActive(true));

@@ -1,5 +1,6 @@
 ﻿using QSB.SectorSync;
 using QSB.SectorSync.WorldObjects;
+using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
 
@@ -105,6 +106,7 @@ namespace QSB.Syncs.RigidbodySync
 
 		public void SetReferenceSector(QSBSector sector)
 		{
+			DebugLog.DebugWrite($"{GetType().Name} set reference sector to {transform.name}");
 			ReferenceSector = sector;
 			SetReferenceTransform(sector?.Transform);
 		}

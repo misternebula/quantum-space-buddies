@@ -1,65 +1,14 @@
 ﻿using OWML.Common;
-using QSB.Player;
 using QSB.Player.TransformSync;
 using QSB.Utility;
-using QuantumUNET.Components;
 using QuantumUNET.Transport;
 using System.Linq;
 using UnityEngine;
 
 namespace QSB.Syncs.TransformSync
 {
-	public abstract class UnparentedBaseTransformSync : QNetworkTransform, ISync<GameObject>
+	public abstract class UnparentedBaseTransformSync : SyncBase
 	{
-		public uint AttachedNetId
-		{
-			get
-			{
-				if (NetIdentity == null)
-				{
-					DebugLog.ToConsole($"Error - Trying to get AttachedNetId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
-					return uint.MaxValue;
-				}
-
-				return NetIdentity.NetId.Value;
-			}
-		}
-
-		public uint PlayerId
-		{
-			get
-			{
-				if (NetIdentity == null)
-				{
-					DebugLog.ToConsole($"Error - Trying to get PlayerId with null NetIdentity! Type:{GetType().Name} GrandType:{GetType().GetType().Name}", MessageType.Error);
-					return uint.MaxValue;
-				}
-
-				return NetIdentity.RootIdentity != null
-					? NetIdentity.RootIdentity.NetId.Value
-					: AttachedNetId;
-			}
-		}
-
-		public PlayerInfo Player => QSBPlayerManager.GetPlayer(PlayerId);
-
-		public Transform ReferenceTransform { get; set; }
-		public GameObject AttachedObject { get; set; }
-
-		public abstract bool IsReady { get; }
-		public abstract bool UseInterpolation { get; }
-
-		protected abstract GameObject InitLocalTransform();
-		protected abstract GameObject InitRemoteTransform();
-
-		private bool _isInitialized;
-		private const float SmoothTime = 0.1f;
-		protected virtual float DistanceLeeway { get; } = 5f;
-		private float _previousDistance;
-		private Vector3 _positionSmoothVelocity;
-		private Quaternion _rotationSmoothVelocity;
-		protected IntermediaryTransform _intermediaryTransform;
-
 		public virtual void Start()
 		{
 			var lowestBound = Resources.FindObjectsOfTypeAll<PlayerTransformSync>()
@@ -84,7 +33,7 @@ namespace QSB.Syncs.TransformSync
 		protected void OnSceneLoaded(OWScene scene, bool isInUniverse) =>
 			_isInitialized = false;
 
-		protected virtual void Init()
+		protected override void Init()
 		{
 			AttachedObject = HasAuthority ? InitLocalTransform() : InitRemoteTransform();
 			_isInitialized = true;
@@ -136,40 +85,7 @@ namespace QSB.Syncs.TransformSync
 			}
 		}
 
-		public override void Update()
-		{
-			if (!_isInitialized && IsReady)
-			{
-				Init();
-			}
-			else if (_isInitialized && !IsReady)
-			{
-				_isInitialized = false;
-				return;
-			}
-
-			if (!_isInitialized)
-			{
-				return;
-			}
-
-			if (AttachedObject == null)
-			{
-				DebugLog.ToConsole($"Warning - AttachedObject {Player.PlayerId}.{GetType().Name} is null.", MessageType.Warning);
-				return;
-			}
-
-			if (ReferenceTransform == null)
-			{
-				return;
-			}
-
-			UpdateTransform();
-
-			base.Update();
-		}
-
-		protected virtual void UpdateTransform()
+		protected override void UpdateTransform()
 		{
 			if (HasAuthority)
 			{
@@ -211,39 +127,12 @@ namespace QSB.Syncs.TransformSync
 
 			ReferenceTransform = transform;
 			_intermediaryTransform.SetReferenceTransform(transform);
-		}
 
-		// TODO : remove .Distance
-		private Vector3 SmartSmoothDamp(Vector3 currentPosition, Vector3 targetPosition)
-		{
-			var distance = Vector3.Distance(currentPosition, targetPosition);
-			if (distance > _previousDistance + DistanceLeeway)
+			if (HasAuthority || NetIdentity.ClientAuthorityOwner == null)
 			{
-				DebugLog.ToConsole($"Warning - {AttachedObject.name} moved too far!", MessageType.Warning);
-				_previousDistance = distance;
-				return targetPosition;
+				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
+				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
 			}
-
-			_previousDistance = distance;
-			return Vector3.SmoothDamp(currentPosition, targetPosition, ref _positionSmoothVelocity, SmoothTime);
-		}
-
-		private void OnRenderObject()
-		{
-			if (!QSBCore.WorldObjectsReady
-				|| !QSBCore.DebugMode
-				|| !QSBCore.ShowLinesInDebug
-				|| !IsReady
-				|| ReferenceTransform == null)
-			{
-				return;
-			}
-
-			Popcron.Gizmos.Cube(_intermediaryTransform.GetTargetPosition_Unparented(), _intermediaryTransform.GetTargetRotation_Unparented(), Vector3.one / 2, Color.red);
-			Popcron.Gizmos.Line(_intermediaryTransform.GetTargetPosition_Unparented(), AttachedObject.transform.position, Color.red);
-			var color = HasMoved() ? Color.green : Color.yellow;
-			Popcron.Gizmos.Cube(AttachedObject.transform.position, AttachedObject.transform.rotation, Vector3.one / 2, color);
-			Popcron.Gizmos.Line(AttachedObject.transform.position, ReferenceTransform.position, Color.cyan);
 		}
 	}
 }

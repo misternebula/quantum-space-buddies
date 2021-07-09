@@ -56,6 +56,12 @@ namespace QSB.Player
 
 		private void Initialize()
 		{
+			if (_player.Name == null)
+			{
+				DebugLog.ToConsole($"Error - {_player.PlayerId} has a null name!", OWML.Common.MessageType.Error);
+				_player.Name = "NULL";
+			}
+
 			_markerLabel = _player.Name.ToUpper();
 			_needsInitializing = false;
 			_isReady = true;

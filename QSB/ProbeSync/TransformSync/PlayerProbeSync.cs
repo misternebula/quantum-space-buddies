@@ -18,7 +18,7 @@ namespace QSB.ProbeSync.TransformSync
 			LocalInstance = this;
 		}
 
-		protected override Transform InitLocalTransform()
+		protected override Component InitLocalTransform()
 		{
 			SectorSync.Init(Locator.GetProbe().GetSectorDetector(), this);
 
@@ -37,7 +37,7 @@ namespace QSB.ProbeSync.TransformSync
 			return body;
 		}
 
-		protected override Transform InitRemoteTransform()
+		protected override Component InitRemoteTransform()
 		{
 			var probe = Locator.GetProbe().transform;
 

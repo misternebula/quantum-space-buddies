@@ -23,10 +23,17 @@ namespace QSB.OrbSync.TransformSync
 		protected override void Init()
 		{
 			base.Init();
-			SetReferenceTransform(AttachedObject.GetAttachedOWRigidbody().GetOrigParent());
+			var originalParent = AttachedObject.GetAttachedOWRigidbody().GetOrigParent();
+			if (originalParent == Locator.GetRootTransform())
+			{
+				DebugLog.DebugWrite($"{_logName} with AttachedObject {AttachedObject.name} had it's original parent as SolarSystemRoot - Destroying...");
+				Destroy(this);
+			}
+
+			SetReferenceTransform(originalParent);
 		}
 
-		private GameObject GetTransform()
+		private Transform GetTransform()
 		{
 			if (_index == -1)
 			{
@@ -46,11 +53,11 @@ namespace QSB.OrbSync.TransformSync
 				return null;
 			}
 
-			return QSBWorldSync.OldOrbList[_index].gameObject;
+			return QSBWorldSync.OldOrbList[_index].transform;
 		}
 
-		protected override GameObject InitLocalTransform() => GetTransform();
-		protected override GameObject InitRemoteTransform() => GetTransform();
+		protected override Component InitLocalTransform() => GetTransform();
+		protected override Component InitRemoteTransform() => GetTransform();
 
 		public override bool IsReady => QSBCore.WorldObjectsReady;
 		public override bool UseInterpolation => false;

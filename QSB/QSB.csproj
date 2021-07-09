@@ -268,9 +268,9 @@
     <Compile Include="ShipSync\WorldObjects\QSBShipComponent.cs" />
     <Compile Include="ShipSync\WorldObjects\QSBShipHull.cs" />
     <Compile Include="Syncs\ISectoredSync.cs" />
-    <Compile Include="Syncs\ISync.cs" />
     <Compile Include="Syncs\RigidbodySync\UnparentedBaseRigidbodySync.cs" />
     <Compile Include="Syncs\RigidbodySync\SectoredRigidbodySync.cs" />
+    <Compile Include="Syncs\SyncBase.cs" />
     <Compile Include="TimeSync\Patches\TimePatches.cs" />
     <Compile Include="Utility\CustomRelativisticParticleSystem.cs" />
     <Compile Include="RoastingSync\QSBMarshmallow.cs" />
@@ -287,7 +287,6 @@
     <Compile Include="StatueSync\Events\StartStatueMessage.cs" />
     <Compile Include="StatueSync\Patches\StatuePatches.cs" />
     <Compile Include="StatueSync\StatueManager.cs" />
-    <Compile Include="RoastingSync\TransformSync\RoastingStickTransformSync.cs" />
     <Compile Include="Syncs\TransformSync\BaseTransformSync.cs" />
     <Compile Include="Syncs\IntermediaryTransform.cs" />
     <Compile Include="Syncs\TransformSync\SectoredTransformSync.cs" />
@@ -360,7 +359,6 @@
     <Compile Include="Player\PlayerInfo.cs" />
     <Compile Include="DeathSync\RespawnOnDeath.cs" />
     <Compile Include="Player\QSBPlayerManager.cs" />
-    <Compile Include="Player\TransformSync\PlayerCameraSync.cs" />
     <Compile Include="Player\PlayerHUDMarker.cs" />
     <Compile Include="Tools\PlayerToolsManager.cs" />
     <Compile Include="Utility\QuaternionHelper.cs" />

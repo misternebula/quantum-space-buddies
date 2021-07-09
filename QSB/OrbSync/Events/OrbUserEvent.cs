@@ -70,7 +70,7 @@ namespace QSB.OrbSync.Events
 			}
 
 			var orbSync = NomaiOrbTransformSync.OrbTransformSyncs
-				.FirstOrDefault(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].gameObject);
+				.FirstOrDefault(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].transform);
 			if (orbSync == null)
 			{
 				DebugLog.ToConsole($"Error - No orb found for user event. (ID {message.ObjectId})", MessageType.Error);
@@ -107,14 +107,14 @@ namespace QSB.OrbSync.Events
 				return;
 			}
 
-			if (!NomaiOrbTransformSync.OrbTransformSyncs.Any(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].gameObject))
+			if (!NomaiOrbTransformSync.OrbTransformSyncs.Any(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].transform))
 			{
 				DebugLog.ToConsole($"Error - No NomaiOrbTransformSync has AttachedOrb with objectId {message.ObjectId}!");
 				return;
 			}
 
 			var orb = NomaiOrbTransformSync.OrbTransformSyncs
-				.First(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].gameObject);
+				.First(x => x.AttachedObject == QSBWorldSync.OldOrbList[message.ObjectId].transform);
 			orb.enabled = true;
 		}
 	}

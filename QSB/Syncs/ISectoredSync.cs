@@ -3,7 +3,7 @@ using QSB.SectorSync.WorldObjects;
 
 namespace QSB.Syncs
 {
-	public interface ISectoredSync<T> : ISync<T>
+	public interface ISectoredSync<T>
 	{
 		SectorSync.SectorSync SectorSync { get; }
 		QSBSector ReferenceSector { get; }

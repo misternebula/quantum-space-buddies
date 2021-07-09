@@ -19,8 +19,8 @@ namespace QSB.SectorSync
 		private void OnEnable() => RepeatingManager.Repeatings.Add(this);
 		private void OnDisable() => RepeatingManager.Repeatings.Remove(this);
 
-		public List<ISectoredSync<Transform>> SectoredTransformSyncs = new List<ISectoredSync<Transform>>();
-		public List<ISectoredSync<OWRigidbody>> SectoredRigidbodySyncs = new List<ISectoredSync<OWRigidbody>>();
+		public List<SyncBase> SectoredTransformSyncs = new List<SyncBase>();
+		public List<SyncBase> SectoredRigidbodySyncs = new List<SyncBase>();
 
 		public void Invoke()
 		{
@@ -31,11 +31,11 @@ namespace QSB.SectorSync
 					continue;
 				}
 
-				if ((sync as QNetworkBehaviour).HasAuthority
+				if (sync.HasAuthority
 					&& sync.AttachedObject.gameObject.activeInHierarchy
 					&& sync.IsReady)
 				{
-					CheckTransformSyncSector(sync);
+					CheckTransformSyncSector(sync as ISectoredSync<Transform>);
 				}
 			}
 
@@ -50,7 +50,7 @@ namespace QSB.SectorSync
 					&& sync.AttachedObject.gameObject.activeInHierarchy
 					&& sync.IsReady)
 				{
-					CheckTransformSyncSector(sync);
+					CheckTransformSyncSector(sync as ISectoredSync<OWRigidbody>);
 				}
 			}
 		}
@@ -88,7 +88,7 @@ namespace QSB.SectorSync
 		private void CheckTransformSyncSector<T>(ISectoredSync<T> transformSync)
 			where T : Component
 		{
-			var attachedObject = transformSync.AttachedObject;
+			var attachedObject = (transformSync as SyncBase).AttachedObject;
 			var closestSector = transformSync.SectorSync.GetClosestSector(attachedObject.transform);
 			if (closestSector == default(QSBSector))
 			{
@@ -100,7 +100,7 @@ namespace QSB.SectorSync
 				return;
 			}
 
-			DebugLog.DebugWrite($"LOCAL Change {transformSync.AttachedObject.name} to sector {closestSector.Name}");
+			DebugLog.DebugWrite($"LOCAL Change {attachedObject.name} to sector {closestSector.Name}");
 
 			transformSync.SetReferenceSector(closestSector);
 		}

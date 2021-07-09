@@ -16,14 +16,14 @@ namespace QSB.ShipSync.WorldObjects
 		{
 			DebugLog.DebugWrite($"[HULL] {AttachedObject} Set damaged.");
 			AttachedObject.SetValue("_damaged", true);
-			QSBWorldSync.RaiseEvent(AttachedObject, "OnDamaged", AttachedObject);
+			AttachedObject.RaiseEvent("OnDamaged", AttachedObject);
 		}
 
 		public void SetRepaired()
 		{
 			DebugLog.DebugWrite($"[HULL] {AttachedObject} Set repaired.");
 			AttachedObject.SetValue("_damaged", false);
-			QSBWorldSync.RaiseEvent(AttachedObject, "OnRepaired", AttachedObject);
+			AttachedObject.RaiseEvent("OnRepaired", AttachedObject);
 			var damageEffect = AttachedObject.GetValue<DamageEffect>("_damageEffect");
 			damageEffect.SetEffectBlend(0f);
 		}

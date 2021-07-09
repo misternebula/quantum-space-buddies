@@ -1,10 +1,8 @@
-﻿using OWML.Utils;
-using QSB.SectorSync;
+﻿using QSB.SectorSync;
 using QSB.SectorSync.WorldObjects;
 using QSB.Utility;
 using QSB.WorldSync;
 using QuantumUNET.Transport;
-using System.Linq;
 using UnityEngine;
 
 namespace QSB.Syncs.TransformSync
@@ -43,7 +41,6 @@ namespace QSB.Syncs.TransformSync
 			var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
 			if (closestSector != null)
 			{
-				DebugLog.DebugWrite($"INIT - Set {PlayerId}.{GetType().Name} to sector {closestSector.Name}");
 				// TODO : should this be set reference sector?
 				SetReferenceTransform(closestSector.Transform);
 			}
@@ -66,6 +63,7 @@ namespace QSB.Syncs.TransformSync
 			}
 			else
 			{
+				DebugLog.ToConsole($"Warning - ReferenceSector of {PlayerId}.{GetType().Name} is null.");
 				writer.Write(-1);
 			}
 
@@ -89,7 +87,13 @@ namespace QSB.Syncs.TransformSync
 
 			if (sector != ReferenceSector)
 			{
-				DebugLog.DebugWrite($"DESERAILIZE new sector ({ReferenceSector.Name} to {sector.Name})");
+				if (sector == null)
+				{
+					DebugLog.ToConsole($"Error - {PlayerId}.{GetType().Name} got sector of ID -1.", OWML.Common.MessageType.Error);
+					base.DeserializeTransform(reader);
+					return;
+				}
+
 				SetReferenceSector(sector);
 			}
 
@@ -107,6 +111,7 @@ namespace QSB.Syncs.TransformSync
 				}
 				else
 				{
+					DebugLog.ToConsole($"Error - No closest sector found to {PlayerId}.{GetType().Name}!", OWML.Common.MessageType.Error);
 					return;
 				}
 			}
@@ -116,7 +121,6 @@ namespace QSB.Syncs.TransformSync
 
 		public void SetReferenceSector(QSBSector sector)
 		{
-			DebugLog.DebugWrite($"{Player.PlayerId}.{GetType().Name} set reference sector to {sector.Name}");
 			ReferenceSector = sector;
 			SetReferenceTransform(sector?.Transform);
 		}

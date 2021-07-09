@@ -20,9 +20,9 @@ namespace QSB.Tools
 		private static readonly Vector3 SignalscopeScale = new Vector3(1.5f, 1.5f, 1.5f);
 		private static readonly Vector3 TranslatorScale = new Vector3(0.75f, 0.75f, 0.75f);
 
-		public static void Init(Transform camera)
+		public static void Init(Transform playerCamera)
 		{
-			CreateStowTransforms(camera);
+			CreateStowTransforms(playerCamera);
 
 			_playerToolsMaterial = GameObject.Find("Props_HEA_ProbeLauncher_ProbeCamera/ProbeLauncherChassis").GetComponent<MeshRenderer>().materials[0];
 			if (QSBSceneManager.CurrentScene == OWScene.SolarSystem)
@@ -34,10 +34,10 @@ namespace QSB.Tools
 				_lightbulbMaterial = GameObject.Find("lantern_lamp").GetComponent<MeshRenderer>().materials[0];
 			}
 
-			CreateFlashlight(camera);
-			CreateSignalscope(camera);
-			CreateProbeLauncher(camera);
-			CreateTranslator(camera);
+			CreateFlashlight(playerCamera);
+			CreateSignalscope(playerCamera);
+			CreateProbeLauncher(playerCamera);
+			CreateTranslator(playerCamera);
 		}
 
 		public static void CreateProbe(Transform newProbe, PlayerInfo player)

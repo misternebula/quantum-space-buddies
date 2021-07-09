@@ -1,7 +1,7 @@
 ﻿using QSB.Events;
 using QSB.Patches;
 using QSB.Player;
-using QSB.WorldSync;
+using QSB.Utility;
 using UnityEngine;
 
 namespace QSB.Animation.Patches
@@ -91,24 +91,24 @@ namespace QSB.Animation.Patches
 				if (!____leftFootGrounded && leftFootLift < 0.333f)
 				{
 					____leftFootGrounded = true;
-					QSBWorldSync.RaiseEvent(__instance, "OnLeftFootGrounded");
+					__instance.RaiseEvent("OnLeftFootGrounded");
 				}
 				else if (____leftFootGrounded && leftFootLift > 0.666f)
 				{
 					____leftFootGrounded = false;
-					QSBWorldSync.RaiseEvent(__instance, "OnLeftFootLift");
+					__instance.RaiseEvent("OnLeftFootLift");
 				}
 
 				var rightFootLift = ____animator.GetFloat("RightFootLift");
 				if (!____rightFootGrounded && rightFootLift < 0.333f)
 				{
 					____rightFootGrounded = true;
-					QSBWorldSync.RaiseEvent(__instance, "OnRightFootGrounded");
+					__instance.RaiseEvent("OnRightFootGrounded");
 				}
 				else if (____rightFootGrounded && rightFootLift > 0.666f)
 				{
 					____rightFootGrounded = false;
-					QSBWorldSync.RaiseEvent(__instance, "OnRightFootLift");
+					__instance.RaiseEvent("OnRightFootLift");
 				}
 			}
 
