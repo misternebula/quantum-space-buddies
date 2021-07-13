@@ -5,7 +5,7 @@ using QSB.WorldSync.Events;
 
 namespace QSB.ShipSync.Events.Hull
 {
-	class HullRepairedEvent : QSBEvent<WorldObjectMessage>
+	internal class HullRepairedEvent : QSBEvent<WorldObjectMessage>
 	{
 		public override EventType Type => EventType.HullRepaired;
 

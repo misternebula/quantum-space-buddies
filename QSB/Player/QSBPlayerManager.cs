@@ -5,7 +5,6 @@ using QSB.Tools;
 using QSB.Utility;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 
@@ -20,9 +19,8 @@ namespace QSB.Player
 				var localInstance = PlayerTransformSync.LocalInstance;
 				if (localInstance == null)
 				{
-					var method = new StackTrace().GetFrame(1).GetMethod();
 					DebugLog.ToConsole($"Error - Trying to get LocalPlayerId when the local PlayerTransformSync instance is null." +
-						$"{Environment.NewLine} Called from {method.DeclaringType.Name}.{method.Name} ", MessageType.Error);
+						$"{Environment.NewLine} Stacktrace : {Environment.StackTrace} ", MessageType.Error);
 					return uint.MaxValue;
 				}
 
@@ -47,9 +45,8 @@ namespace QSB.Player
 		{
 			if (!QSBNetworkManager.Instance.IsReady)
 			{
-				var method = new StackTrace().GetFrame(1).GetMethod();
 				DebugLog.ToConsole($"Warning - GetPlayer() (id<{id}>) called when Network Manager not ready! Is a Player Sync Object still active? " +
-					$"{Environment.NewLine} Called from {method.DeclaringType.Name}.{method.Name}", MessageType.Warning);
+					$"{Environment.NewLine} Stacktrace : {Environment.StackTrace}", MessageType.Warning);
 			}
 
 			if (id == uint.MaxValue || id == 0U)
@@ -63,8 +60,13 @@ namespace QSB.Player
 				return player;
 			}
 
-			var trace = new StackTrace().GetFrame(1).GetMethod();
-			DebugLog.DebugWrite($"Create Player : id<{id}> (Called from {trace.DeclaringType.Name}.{trace.Name})", MessageType.Info);
+			if (!QSBCore.IsInMultiplayer)
+			{
+				DebugLog.ToConsole($"Error - Tried to create player id:{id} when not in multiplayer! Stacktrace : {Environment.StackTrace}", MessageType.Error);
+				return default;
+			}
+
+			DebugLog.DebugWrite($"Create Player : id<{id}> Stacktrace : {Environment.StackTrace}", MessageType.Info);
 			player = new PlayerInfo(id);
 			PlayerList.Add(player);
 			return player;
@@ -72,8 +74,7 @@ namespace QSB.Player
 
 		public static void RemovePlayer(uint id)
 		{
-			var trace = new StackTrace().GetFrame(1).GetMethod();
-			DebugLog.DebugWrite($"Remove Player : id<{id}> (Called from {trace.DeclaringType.Name}.{trace.Name})", MessageType.Info);
+			DebugLog.DebugWrite($"Remove Player : id<{id}> Stacktrace : {Environment.StackTrace}", MessageType.Info);
 			PlayerList.RemoveAll(x => x.PlayerId == id);
 		}
 
@@ -101,11 +102,8 @@ namespace QSB.Player
 
 		public static void RemoveSyncObject(PlayerSyncObject obj) => PlayerSyncObjects.Remove(obj);
 
-		public static bool IsBelongingToLocalPlayer(uint id)
-		{
-			return id == LocalPlayerId ||
+		public static bool IsBelongingToLocalPlayer(uint id) => id == LocalPlayerId ||
 				PlayerSyncObjects.Any(x => x != null && x.AttachedNetId == id && x.IsLocalPlayer);
-		}
 
 		public static List<PlayerInfo> GetPlayersWithCameras(bool includeLocalCamera = true)
 		{
@@ -146,12 +144,9 @@ namespace QSB.Player
 			player.Visible = visible;
 		}
 
-		public static PlayerInfo GetClosestPlayerToWorldPoint(Vector3 worldPoint, bool includeLocalPlayer)
-		{
-			return includeLocalPlayer
+		public static PlayerInfo GetClosestPlayerToWorldPoint(Vector3 worldPoint, bool includeLocalPlayer) => includeLocalPlayer
 				? GetClosestPlayerToWorldPoint(PlayerList, worldPoint)
 				: GetClosestPlayerToWorldPoint(PlayerList.Where(x => x != LocalPlayer).ToList(), worldPoint);
-		}
 
 		public static PlayerInfo GetClosestPlayerToWorldPoint(List<PlayerInfo> playerList, Vector3 worldPoint)
 		{

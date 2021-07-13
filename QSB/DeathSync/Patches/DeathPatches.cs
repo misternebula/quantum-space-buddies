@@ -206,14 +206,11 @@ namespace QSB.DeathSync.Patches
 		public static void ShipDamageController_Awake(ref bool ____exploded)
 			=> ____exploded = true;
 
-		public static IEnumerable<CodeInstruction> ReturnNull(IEnumerable<CodeInstruction> instructions)
-		{
-			return new List<CodeInstruction>
+		public static IEnumerable<CodeInstruction> ReturnNull(IEnumerable<CodeInstruction> instructions) => new List<CodeInstruction>
 			{
 				new CodeInstruction(OpCodes.Ldnull),
 				new CodeInstruction(OpCodes.Ret)
 			};
-		}
 
 		public static bool DestructionVolume_VanishShip(DeathType ____deathType)
 		{

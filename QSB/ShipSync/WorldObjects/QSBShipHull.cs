@@ -4,7 +4,7 @@ using QSB.WorldSync;
 
 namespace QSB.ShipSync.WorldObjects
 {
-	class QSBShipHull : WorldObject<ShipHull>
+	internal class QSBShipHull : WorldObject<ShipHull>
 	{
 		public override void Init(ShipHull hull, int id)
 		{

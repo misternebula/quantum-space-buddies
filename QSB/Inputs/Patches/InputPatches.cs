@@ -2,7 +2,7 @@
 
 namespace QSB.Inputs.Patches
 {
-	class InputPatches : QSBPatch
+	internal class InputPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

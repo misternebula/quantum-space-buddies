@@ -4,7 +4,7 @@ using QSB.WorldSync;
 
 namespace QSB.ShipSync.Events.Component
 {
-	class ComponentRepairTickEvent : QSBEvent<RepairTickMessage>
+	internal class ComponentRepairTickEvent : QSBEvent<RepairTickMessage>
 	{
 		public override EventType Type => EventType.ComponentRepairTick;
 

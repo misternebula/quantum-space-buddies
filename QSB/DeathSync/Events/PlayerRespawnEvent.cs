@@ -4,7 +4,7 @@ using QSB.Player;
 
 namespace QSB.DeathSync.Events
 {
-	class PlayerRespawnEvent : QSBEvent<PlayerMessage>
+	internal class PlayerRespawnEvent : QSBEvent<PlayerMessage>
 	{
 		public override EventType Type => EventType.PlayerRespawn;
 

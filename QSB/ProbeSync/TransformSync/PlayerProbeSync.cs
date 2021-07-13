@@ -5,19 +5,21 @@ using QSB.SectorSync;
 using QSB.Syncs.TransformSync;
 using QSB.Tools;
 using QSB.Utility;
+using QSB.WorldSync;
 using UnityEngine;
 
 namespace QSB.ProbeSync.TransformSync
 {
 	public class PlayerProbeSync : SectoredTransformSync
 	{
+		protected override float DistanceLeeway => 10f;
+		public override bool UseInterpolation => true;
+		public override TargetType Type => TargetType.Probe;
+		public override bool IgnoreDisabledAttachedObject => true;
+
 		public static PlayerProbeSync LocalInstance { get; private set; }
 
-		public override void OnStartAuthority()
-		{
-			DebugLog.DebugWrite($"OnStartAuthority probe");
-			LocalInstance = this;
-		}
+		public override void OnStartAuthority() => LocalInstance = this;
 
 		protected override Component InitLocalTransform()
 		{
@@ -48,7 +50,10 @@ namespace QSB.ProbeSync.TransformSync
 				return default;
 			}
 
-			var body = probe.InstantiateInactive();
+			var body = probe.gameObject.activeSelf 
+				? probe.InstantiateInactive() 
+				: Instantiate(probe);
+
 			body.name = "RemoteProbeTransform";
 
 			PlayerToolsManager.CreateProbe(body, Player);
@@ -58,47 +63,13 @@ namespace QSB.ProbeSync.TransformSync
 			return body;
 		}
 
-		// TODO : maybe just add a field like "useinterpolation" for still updating if the attachedobject is disabled
-		public override void Update()
+		protected override bool UpdateTransform()
 		{
-			if (!_isInitialized && IsReady)
+			if (!base.UpdateTransform())
 			{
-				Init();
-			}
-			else if (_isInitialized && !IsReady)
-			{
-				_isInitialized = false;
-				return;
+				return false;
 			}
 
-			if (!_isInitialized)
-			{
-				return;
-			}
-
-			if (AttachedObject == null)
-			{
-				DebugLog.ToConsole($"Warning - AttachedObject {_logName} is null.", MessageType.Warning);
-				_isInitialized = false;
-				return;
-			}
-
-			if (ReferenceTransform != null && ReferenceTransform.position == Vector3.zero)
-			{
-				DebugLog.ToConsole($"Warning - {_logName}'s ReferenceTransform is at (0,0,0). ReferenceTransform:{ReferenceTransform.name}, AttachedObject:{AttachedObject.name}", MessageType.Warning);
-			}
-
-			if (ReferenceTransform == null)
-			{
-				DebugLog.ToConsole($"Warning - {_logName}'s ReferenceTransform is null. AttachedObject:{AttachedObject.name}", MessageType.Warning);
-				return;
-			}
-
-			UpdateTransform();
-		}
-
-		protected override void UpdateTransform()
-		{
 			if (HasAuthority)
 			{
 				if (!AttachedObject.gameObject.activeInHierarchy)
@@ -124,12 +95,10 @@ namespace QSB.ProbeSync.TransformSync
 					{
 						SetReferenceSector(playerReferenceSector);
 					}
-
-					return;
 				}
 			}
 
-			base.UpdateTransform();
+			return true;
 		}
 
 		public override bool IsReady => Locator.GetProbe() != null
@@ -137,12 +106,7 @@ namespace QSB.ProbeSync.TransformSync
 			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
 			&& Player.PlayerStates.IsReady
 			&& NetId.Value != uint.MaxValue
-			&& NetId.Value != 0U;
-
-		protected override float DistanceLeeway => 10f;
-
-		public override bool UseInterpolation => true;
-
-		public override TargetType Type => TargetType.Probe;
+			&& NetId.Value != 0U
+			&& WorldObjectManager.AllReady;
 	}
 }

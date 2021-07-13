@@ -41,6 +41,12 @@ namespace QSB.Player.Events
 			player.Name = message.PlayerName;
 			var text = $"Connected to server as {player.Name}.";
 			DebugLog.ToAll(text, MessageType.Info);
+
+			if (QSBSceneManager.IsInUniverse)
+			{
+				QSBPlayerManager.LocalPlayer.PlayerStates.IsReady = true;
+				QSBEventManager.FireEvent(EventNames.QSBPlayerReady, true);
+			}
 		}
 	}
 }

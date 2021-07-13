@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace QSB.Utility
 {
-	class DebugGUI : MonoBehaviour
+	internal class DebugGUI : MonoBehaviour
 	{
 		private const float _debugLineSpacing = 11f;
 
@@ -37,18 +37,18 @@ namespace QSB.Utility
 			}
 
 			var offset2 = 10f;
-			GUI.Label(new Rect(320, offset2, 200f, 20f), $"Player data :");
+			GUI.Label(new Rect(340, offset2, 200f, 20f), $"Player data :");
 			offset2 += _debugLineSpacing;
 			foreach (var player in QSBPlayerManager.PlayerList.Where(x => x.PlayerStates.IsReady))
 			{
 				var networkTransform = player.TransformSync;
 				var sector = networkTransform.ReferenceSector;
 
-				GUI.Label(new Rect(320, offset2, 400f, 20f), $"{player.PlayerId}.{player.Name}");
+				GUI.Label(new Rect(340, offset2, 400f, 20f), $"{player.PlayerId}.{player.Name}");
 				offset2 += _debugLineSpacing;
-				GUI.Label(new Rect(320, offset2, 400f, 20f), $" - L.Pos : {networkTransform.transform.localPosition}");
+				GUI.Label(new Rect(340, offset2, 400f, 20f), $" - L.Pos : {networkTransform.transform.localPosition}");
 				offset2 += _debugLineSpacing;
-				GUI.Label(new Rect(320, offset2, 400f, 20f), $" - Sector : {(sector == null ? "NULL" : sector.Name)}");
+				GUI.Label(new Rect(340, offset2, 400f, 20f), $" - Sector : {(sector == null ? "NULL" : sector.Name)}");
 				offset2 += _debugLineSpacing;
 				var probeSync = BaseTransformSync.GetPlayers<PlayerProbeSync>(player);
 				if (probeSync == default)
@@ -57,7 +57,7 @@ namespace QSB.Utility
 				}
 
 				var probeSector = probeSync.ReferenceSector;
-				GUI.Label(new Rect(320, offset2, 400f, 20f), $" - Probe Sector : {(probeSector == null ? "NULL" : probeSector.Name)}");
+				GUI.Label(new Rect(340, offset2, 400f, 20f), $" - Probe Sector : {(probeSector == null ? "NULL" : probeSector.Name)}");
 				offset2 += _debugLineSpacing;
 			}
 		}

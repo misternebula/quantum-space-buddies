@@ -137,10 +137,7 @@ namespace QSB.Player
 				() => QSBPlayerManager.GetSyncObject<AnimationSync>(PlayerId).SetSuitState(PlayerStates.SuitedUp));
 		}
 
-		private QSBTool GetToolByType(ToolType type)
-		{
-			return CameraBody?.GetComponentsInChildren<QSBTool>()
+		private QSBTool GetToolByType(ToolType type) => CameraBody?.GetComponentsInChildren<QSBTool>()
 				.FirstOrDefault(x => x.Type == type);
-		}
 	}
 }

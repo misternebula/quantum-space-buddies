@@ -337,28 +337,25 @@ namespace QuantumUNET.Transport
 
 		public Ray ReadRay() => new Ray(ReadVector3(), ReadVector3());
 
-		public Matrix4x4 ReadMatrix4x4()
+		public Matrix4x4 ReadMatrix4x4() => new Matrix4x4
 		{
-			return new Matrix4x4
-			{
-				m00 = ReadSingle(),
-				m01 = ReadSingle(),
-				m02 = ReadSingle(),
-				m03 = ReadSingle(),
-				m10 = ReadSingle(),
-				m11 = ReadSingle(),
-				m12 = ReadSingle(),
-				m13 = ReadSingle(),
-				m20 = ReadSingle(),
-				m21 = ReadSingle(),
-				m22 = ReadSingle(),
-				m23 = ReadSingle(),
-				m30 = ReadSingle(),
-				m31 = ReadSingle(),
-				m32 = ReadSingle(),
-				m33 = ReadSingle()
-			};
-		}
+			m00 = ReadSingle(),
+			m01 = ReadSingle(),
+			m02 = ReadSingle(),
+			m03 = ReadSingle(),
+			m10 = ReadSingle(),
+			m11 = ReadSingle(),
+			m12 = ReadSingle(),
+			m13 = ReadSingle(),
+			m20 = ReadSingle(),
+			m21 = ReadSingle(),
+			m22 = ReadSingle(),
+			m23 = ReadSingle(),
+			m30 = ReadSingle(),
+			m31 = ReadSingle(),
+			m32 = ReadSingle(),
+			m33 = ReadSingle()
+		};
 
 		public NetworkHash128 ReadNetworkHash128()
 		{

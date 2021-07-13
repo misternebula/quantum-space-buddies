@@ -64,7 +64,7 @@ namespace QSB.ShipSync
 					QNetworkServer.Destroy(ShipTransformSync.LocalInstance.gameObject);
 				}
 
-				QNetworkServer.Spawn(Instantiate(QSBNetworkManager.Instance.ShipPrefab));
+				QNetworkServer.SpawnWithClientAuthority(Instantiate(QSBNetworkManager.Instance.ShipPrefab), QSBPlayerManager.LocalPlayer.TransformSync.gameObject);
 			}
 
 			QSBWorldSync.Init<QSBShipComponent, ShipComponent>();

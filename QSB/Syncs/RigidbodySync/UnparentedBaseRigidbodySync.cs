@@ -22,7 +22,11 @@ namespace QSB.Syncs.RigidbodySync
 			QSBSceneManager.OnSceneLoaded += OnSceneLoaded;
 		}
 
-		protected virtual void OnDestroy() => QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+		protected virtual void OnDestroy()
+		{
+			DebugLog.DebugWrite($"OnDestroy {_logName}");
+			QSBSceneManager.OnSceneLoaded -= OnSceneLoaded;
+		}
 
 		private void OnSceneLoaded(OWScene scene, bool isInUniverse)
 			=> _isInitialized = false;
@@ -106,7 +110,7 @@ namespace QSB.Syncs.RigidbodySync
 			}
 		}
 
-		protected override void UpdateTransform()
+		protected override bool UpdateTransform()
 		{
 			if (HasAuthority)
 			{
@@ -114,7 +118,7 @@ namespace QSB.Syncs.RigidbodySync
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
 				_relativeVelocity = GetRelativeVelocity();
 				_relativeAngularVelocity = (AttachedObject as OWRigidbody).GetRelativeAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody());
-				return;
+				return true;
 			}
 
 			var targetPos = _intermediaryTransform.GetTargetPosition_Unparented();
@@ -122,7 +126,7 @@ namespace QSB.Syncs.RigidbodySync
 
 			if (targetPos == Vector3.zero || _intermediaryTransform.GetTargetPosition_ParentedToReference() == Vector3.zero)
 			{
-				return;
+				return false;
 			}
 
 			if (UseInterpolation)
@@ -142,6 +146,8 @@ namespace QSB.Syncs.RigidbodySync
 
 			SetVelocity((AttachedObject as OWRigidbody), targetVelocity);
 			(AttachedObject as OWRigidbody).SetAngularVelocity(ReferenceTransform.GetAttachedOWRigidbody().GetAngularVelocity() + _relativeAngularVelocity);
+
+			return true;
 		}
 
 		private void SetVelocity(OWRigidbody rigidbody, Vector3 relativeVelocity)
@@ -174,7 +180,7 @@ namespace QSB.Syncs.RigidbodySync
 			ReferenceTransform = transform;
 			_intermediaryTransform.SetReferenceTransform(transform);
 
-			if (HasAuthority || NetIdentity.ClientAuthorityOwner == null)
+			if (HasAuthority)
 			{
 				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);

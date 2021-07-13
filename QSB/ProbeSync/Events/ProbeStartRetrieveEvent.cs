@@ -4,7 +4,7 @@ using QSB.Player;
 
 namespace QSB.ProbeSync.Events
 {
-	class ProbeStartRetrieveEvent : QSBEvent<FloatMessage>
+	internal class ProbeStartRetrieveEvent : QSBEvent<FloatMessage>
 	{
 		public override EventType Type => EventType.ProbeStartRetrieve;
 

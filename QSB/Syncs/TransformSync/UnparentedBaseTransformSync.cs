@@ -9,6 +9,9 @@ namespace QSB.Syncs.TransformSync
 {
 	public abstract class UnparentedBaseTransformSync : SyncBase
 	{
+		public override bool IgnoreDisabledAttachedObject => false;
+		public override bool IgnoreNullReferenceTransform => false;
+
 		public virtual void Start()
 		{
 			var lowestBound = Resources.FindObjectsOfTypeAll<PlayerTransformSync>()
@@ -22,6 +25,7 @@ namespace QSB.Syncs.TransformSync
 
 		protected virtual void OnDestroy()
 		{
+			DebugLog.DebugWrite($"OnDestroy {_logName}");
 			if (!HasAuthority && AttachedObject != null)
 			{
 				Destroy(AttachedObject.gameObject);
@@ -85,13 +89,13 @@ namespace QSB.Syncs.TransformSync
 			}
 		}
 
-		protected override void UpdateTransform()
+		protected override bool UpdateTransform()
 		{
 			if (HasAuthority)
 			{
 				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);
-				return;
+				return true;
 			}
 
 			var targetPos = _intermediaryTransform.GetTargetPosition_Unparented();
@@ -109,6 +113,8 @@ namespace QSB.Syncs.TransformSync
 					AttachedObject.transform.rotation = targetRot;
 				}
 			}
+
+			return true;
 		}
 
 		public override bool HasMoved()
@@ -128,7 +134,7 @@ namespace QSB.Syncs.TransformSync
 			ReferenceTransform = transform;
 			_intermediaryTransform.SetReferenceTransform(transform);
 
-			if (HasAuthority || NetIdentity.ClientAuthorityOwner == null)
+			if (HasAuthority)
 			{
 				_intermediaryTransform.EncodePosition(AttachedObject.transform.position);
 				_intermediaryTransform.EncodeRotation(AttachedObject.transform.rotation);

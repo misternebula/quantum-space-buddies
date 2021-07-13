@@ -12,6 +12,9 @@ namespace QSB.Syncs.RigidbodySync
 		public SectorSync.SectorSync SectorSync { get; private set; }
 		public abstract TargetType Type { get; }
 
+		public override bool IgnoreDisabledAttachedObject => false;
+		public override bool IgnoreNullReferenceTransform => true;
+
 		public override void Start()
 		{
 			SectorSync = gameObject.AddComponent<SectorSync.SectorSync>();
@@ -21,6 +24,7 @@ namespace QSB.Syncs.RigidbodySync
 
 		protected override void OnDestroy()
 		{
+			DebugLog.DebugWrite($"OnDestroy {_logName}");
 			base.OnDestroy();
 			QSBSectorManager.Instance.SectoredRigidbodySyncs.Remove(this);
 			if (SectorSync != null)
@@ -33,6 +37,11 @@ namespace QSB.Syncs.RigidbodySync
 		{
 			base.Init();
 			if (!QSBSectorManager.Instance.IsReady)
+			{
+				return;
+			}
+
+			if (!HasAuthority)
 			{
 				return;
 			}
@@ -86,9 +95,9 @@ namespace QSB.Syncs.RigidbodySync
 			base.DeserializeTransform(reader);
 		}
 
-		protected override void UpdateTransform()
+		protected override bool UpdateTransform()
 		{
-			if ((ReferenceTransform == null || ReferenceSector == null) && QSBSectorManager.Instance.IsReady)
+			if ((ReferenceTransform == null || ReferenceSector == null) && QSBSectorManager.Instance.IsReady && HasAuthority)
 			{
 				var closestSector = SectorSync.GetClosestSector(AttachedObject.transform);
 				if (closestSector != null)
@@ -97,11 +106,11 @@ namespace QSB.Syncs.RigidbodySync
 				}
 				else
 				{
-					return;
+					return false;
 				}
 			}
 
-			base.UpdateTransform();
+			return base.UpdateTransform();
 		}
 
 		public void SetReferenceSector(QSBSector sector)

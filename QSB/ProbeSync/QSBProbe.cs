@@ -34,15 +34,9 @@ namespace QSB.ProbeSync
 			_isRetrieving = false;
 		}
 
-		private void Start()
-		{
-			gameObject.SetActive(false);
-		}
+		private void Start() => gameObject.SetActive(false);
 
-		protected void OnDestroy()
-		{
-			_warpEffect.OnWarpComplete -= OnWarpComplete;
-		}
+		protected void OnDestroy() => _warpEffect.OnWarpComplete -= OnWarpComplete;
 
 		public void SetOwner(PlayerInfo player)
 		{
@@ -54,10 +48,7 @@ namespace QSB.ProbeSync
 			_owner = player;
 		}
 
-		private void OnWarpComplete()
-		{
-			Deactivate();
-		}
+		private void OnWarpComplete() => Deactivate();
 
 		public bool IsRetrieving()
 			=> IsLaunched() && _isRetrieving;

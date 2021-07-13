@@ -1,5 +1,6 @@
 ﻿using OWML.Common;
 using QSB.Utility;
+using System.Reflection;
 using UnityEngine;
 
 namespace QSB.Syncs
@@ -44,6 +45,12 @@ namespace QSB.Syncs
 			=> _referenceTransform = transform;
 
 		/// <summary>
+		/// Returns the reference transform - what transform this transform is syncing to.
+		/// </summary>
+		public Transform GetReferenceTransform()
+			=> _referenceTransform;
+
+		/// <summary>
 		/// Sets the position of the INVISIBLE transform to be correct, according to the reference sector and the position of the VISIBLE transform.
 		/// </summary>
 		/// <param name="worldPosition">The world position of the VISIBLE transform.</param>
@@ -51,7 +58,7 @@ namespace QSB.Syncs
 		{
 			if (_referenceTransform == null)
 			{
-				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
+				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name} ({MethodBase.GetCurrentMethod().Name})", MessageType.Error);
 				return;
 			}
 
@@ -66,7 +73,7 @@ namespace QSB.Syncs
 		{
 			if (_referenceTransform == null)
 			{
-				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
+				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name} ({MethodBase.GetCurrentMethod().Name})", MessageType.Error);
 				return;
 			}
 
@@ -92,7 +99,7 @@ namespace QSB.Syncs
 		{
 			if (_referenceTransform == null)
 			{
-				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
+				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name} ({MethodBase.GetCurrentMethod().Name})", MessageType.Error);
 				return Vector3.zero;
 			}
 
@@ -106,7 +113,7 @@ namespace QSB.Syncs
 		{
 			if (_referenceTransform == null)
 			{
-				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name}", MessageType.Error);
+				DebugLog.ToConsole($"Error - _referenceTransform has not been set for {_attachedTransform.name} ({MethodBase.GetCurrentMethod().Name})", MessageType.Error);
 				return Quaternion.identity;
 			}
 

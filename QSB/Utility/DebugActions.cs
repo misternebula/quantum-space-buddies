@@ -25,10 +25,7 @@ namespace QSB.Utility
 			bridgeVolume.AddObjectToVolume(Locator.GetPlayerCameraDetector());
 		}
 
-		private void DamageShipElectricalSystem()
-		{
-			ShipManager.Instance.ShipElectricalComponent.SetDamaged(true);
-		}
+		private void DamageShipElectricalSystem() => ShipManager.Instance.ShipElectricalComponent.SetDamaged(true);
 
 		public void Update()
 		{

@@ -5,7 +5,7 @@ using QSB.WorldSync.Events;
 
 namespace QSB.ShipSync.Events.Component
 {
-	class ComponentDamagedEvent : QSBEvent<WorldObjectMessage>
+	internal class ComponentDamagedEvent : QSBEvent<WorldObjectMessage>
 	{
 		public override EventType Type => EventType.ComponentDamaged;
 

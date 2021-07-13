@@ -946,13 +946,10 @@ namespace QuantumUNET
 			}
 		}
 
-		internal static void HideForConnection(QNetworkIdentity uv, QNetworkConnection conn)
+		internal static void HideForConnection(QNetworkIdentity uv, QNetworkConnection conn) => conn.Send(13, new QObjectDestroyMessage
 		{
-			conn.Send(13, new QObjectDestroyMessage
-			{
-				NetId = uv.NetId
-			});
-		}
+			NetId = uv.NetId
+		});
 
 		public static void SetAllClientsNotReady()
 		{

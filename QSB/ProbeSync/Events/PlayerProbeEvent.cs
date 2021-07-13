@@ -4,7 +4,7 @@ using QSB.Player;
 
 namespace QSB.ProbeSync.Events
 {
-	class PlayerProbeEvent : QSBEvent<EnumMessage<ProbeEvent>>
+	internal class PlayerProbeEvent : QSBEvent<EnumMessage<ProbeEvent>>
 	{
 		public override EventType Type => EventType.ProbeEvent;
 

@@ -31,10 +31,17 @@ namespace QSB.SectorSync
 
 		public void Init<T>(SectorDetector detector, ISectoredSync<T> sectoredSync)
 		{
+			DebugLog.DebugWrite($"INIT SECTORSYNC detector:{detector.name}");
 			if (_sectorDetector != null)
 			{
 				_sectorDetector.OnEnterSector -= AddSector;
 				_sectorDetector.OnExitSector -= RemoveSector;
+			}
+
+			if (detector == null)
+			{
+				DebugLog.ToConsole($"Error - Trying to init SectorSync with null SectorDetector.", MessageType.Error);
+				return;
 			}
 
 			_sectorDetector = detector;
@@ -47,12 +54,31 @@ namespace QSB.SectorSync
 				DebugLog.ToConsole($"Warning - OWRigidbody for {_sectorDetector.name} is null!", MessageType.Warning);
 			}
 
+			PopulateSectorList();
+
 			_targetType = sectoredSync.Type;
 			_isReady = true;
 		}
 
+		private void PopulateSectorList()
+		{
+			var currentList = _sectorDetector.GetValue<List<Sector>>("_sectorList");
+
+			SectorList.Clear();
+			foreach (var sector in currentList)
+			{
+				if (sector == null)
+				{
+					continue;
+				}
+
+				AddSector(sector);
+			}
+		}
+
 		private void AddSector(Sector sector)
 		{
+			DebugLog.DebugWrite($"{_sectorDetector.name} enter sector {sector}");
 			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBSector, Sector>(sector);
 			if (worldObject == null)
 			{
@@ -70,6 +96,7 @@ namespace QSB.SectorSync
 
 		private void RemoveSector(Sector sector)
 		{
+			DebugLog.DebugWrite($"{_sectorDetector.name} exit sector {sector}");
 			var worldObject = QSBWorldSync.GetWorldFromUnity<QSBSector, Sector>(sector);
 			if (worldObject == null)
 			{

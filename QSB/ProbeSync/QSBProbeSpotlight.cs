@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QSB.ProbeSync
 {
-	class QSBProbeSpotlight : MonoBehaviour
+	internal class QSBProbeSpotlight : MonoBehaviour
 	{
 		public ProbeCamera.ID _id;
 		public float _fadeInLength = 1f;

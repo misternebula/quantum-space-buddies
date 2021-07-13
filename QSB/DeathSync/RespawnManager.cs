@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace QSB.DeathSync
 {
-	class RespawnManager : MonoBehaviour
+	internal class RespawnManager : MonoBehaviour
 	{
 		public static RespawnManager Instance;
 

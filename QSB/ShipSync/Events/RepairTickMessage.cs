@@ -3,7 +3,7 @@ using QuantumUNET.Transport;
 
 namespace QSB.ShipSync.Events
 {
-	class RepairTickMessage : WorldObjectMessage
+	internal class RepairTickMessage : WorldObjectMessage
 	{
 		public float RepairNumber { get; set; }
 

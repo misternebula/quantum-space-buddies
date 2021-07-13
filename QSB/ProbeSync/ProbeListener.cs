@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace QSB.ProbeSync
 {
-	class ProbeListener : MonoBehaviour
+	internal class ProbeListener : MonoBehaviour
 	{
 		private SurveyorProbe _attachedProbe;
 

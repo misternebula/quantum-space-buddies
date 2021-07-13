@@ -3,7 +3,7 @@ using QSB.Patches;
 
 namespace QSB.DeathSync.Patches
 {
-	class RespawnPatches : QSBPatch
+	internal class RespawnPatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

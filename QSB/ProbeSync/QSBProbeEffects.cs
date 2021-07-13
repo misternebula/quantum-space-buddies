@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QSB.ProbeSync
 {
-	class QSBProbeEffects : MonoBehaviour
+	internal class QSBProbeEffects : MonoBehaviour
 	{
 		public OWAudioSource _flightLoopAudio;
 		public OWAudioSource _anchorAudio;

@@ -2,7 +2,7 @@
 
 namespace QSB.TimeSync.Patches
 {
-	class TimePatches : QSBPatch
+	internal class TimePatches : QSBPatch
 	{
 		public override QSBPatchTypes Type => QSBPatchTypes.OnClientConnect;
 

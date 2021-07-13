@@ -4,7 +4,7 @@ using QSB.WorldSync;
 
 namespace QSB.ShipSync.Events.Hull
 {
-	class HullRepairTickEvent : QSBEvent<RepairTickMessage>
+	internal class HullRepairTickEvent : QSBEvent<RepairTickMessage>
 	{
 		public override EventType Type => EventType.HullRepairTick;
 

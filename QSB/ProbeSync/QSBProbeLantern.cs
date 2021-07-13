@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace QSB.ProbeSync
 {
-	class QSBProbeLantern : MonoBehaviour
+	internal class QSBProbeLantern : MonoBehaviour
 	{
 		public float _fadeInDuration;
 		public AnimationCurve _fadeInCurve;

@@ -3,7 +3,7 @@ using QSB.Messaging;
 
 namespace QSB.ShipSync.Events
 {
-	class FunnelEnableEvent : QSBEvent<PlayerMessage>
+	internal class FunnelEnableEvent : QSBEvent<PlayerMessage>
 	{
 		public override EventType Type => EventType.EnableFunnel;
 

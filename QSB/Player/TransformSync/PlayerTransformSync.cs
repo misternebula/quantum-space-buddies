@@ -7,6 +7,7 @@ using QSB.SectorSync;
 using QSB.Syncs.TransformSync;
 using QSB.Tools;
 using QSB.Utility;
+using QSB.WorldSync;
 using System.Linq;
 using UnityEngine;
 
@@ -49,6 +50,11 @@ namespace QSB.Player.TransformSync
 
 		protected override void OnSceneLoaded(OWScene scene, bool isInUniverse)
 		{
+			if (!HasAuthority)
+			{
+				base.OnSceneLoaded(scene, isInUniverse);
+			}
+
 			if (isInUniverse)
 			{
 				Player.PlayerStates.IsReady = true;
@@ -65,6 +71,7 @@ namespace QSB.Player.TransformSync
 
 		protected override void OnDestroy()
 		{
+			// TODO : Maybe move this to a leave event...? Would ensure everything could finish up before removing the player
 			QSBPlayerManager.OnRemovePlayer?.Invoke(PlayerId);
 			base.OnDestroy();
 			if (QSBPlayerManager.PlayerExists(PlayerId))
@@ -204,13 +211,17 @@ namespace QSB.Player.TransformSync
 			return REMOTE_Player_Body.transform;
 		}
 
-		protected override void UpdateTransform()
+		protected override bool UpdateTransform()
 		{
-			base.UpdateTransform();
+			if (!base.UpdateTransform())
+			{
+				return false;
+			}
 
 			UpdateSpecificTransform(_visibleStickPivot, _networkStickPivot, ref _pivotPositionVelocity, ref _pivotRotationVelocity);
 			UpdateSpecificTransform(_visibleStickTip, _networkStickTip, ref _tipPositionVelocity, ref _tipRotationVelocity);
 			UpdateSpecificTransform(_visibleCameraRoot, _networkCameraRoot, ref _cameraPositionVelocity, ref _cameraRotationVelocity);
+			return true;
 		}
 
 		private void UpdateSpecificTransform(Transform visible, Transform network, ref Vector3 positionVelocity, ref Quaternion rotationVelocity)
@@ -226,12 +237,14 @@ namespace QSB.Player.TransformSync
 			visible.localRotation = QuaternionHelper.SmoothDamp(visible.localRotation, network.localRotation, ref rotationVelocity, SmoothTime);
 		}
 
-		public override bool IsReady => Locator.GetPlayerTransform() != null
+		public override bool IsReady 
+			=> Locator.GetPlayerTransform() != null
 			&& Player != null
 			&& QSBPlayerManager.PlayerExists(Player.PlayerId)
 			&& Player.PlayerStates.IsReady
 			&& NetId.Value != uint.MaxValue
-			&& NetId.Value != 0U;
+			&& NetId.Value != 0U
+			&& WorldObjectManager.AllReady;
 
 		public static PlayerTransformSync LocalInstance { get; private set; }
 

@@ -79,16 +79,21 @@ namespace QSB.QuantumSync
 
 		public static Tuple<bool, List<PlayerInfo>> IsVisibleUsingCameraFrustum(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)
 		{
+			if (!AllReady)
+			{
+				return new Tuple<bool, List<PlayerInfo>>(false, new List<PlayerInfo>());
+			}
+
 			var playersWithCameras = QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera);
 			if (playersWithCameras.Count == 0)
 			{
 				DebugLog.ToConsole($"Warning - Trying to run IsVisibleUsingCameraFrustum when there are no players!", MessageType.Warning);
-				return new Tuple<bool, List<PlayerInfo>>(false, null);
+				return new Tuple<bool, List<PlayerInfo>>(false, new List<PlayerInfo>());
 			}
 
 			if (!tracker.gameObject.activeInHierarchy)
 			{
-				return new Tuple<bool, List<PlayerInfo>>(false, null);
+				return new Tuple<bool, List<PlayerInfo>>(false, new List<PlayerInfo>());
 			}
 
 			var frustumMethod = tracker.GetType().GetMethod("IsInFrustum", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -114,13 +119,10 @@ namespace QSB.QuantumSync
 			return new Tuple<bool, List<PlayerInfo>>(foundPlayers, playersWhoCanSee);
 		}
 
-		public static bool IsVisible(ShapeVisibilityTracker tracker, bool ignoreLocalCamera)
-		{
-			return tracker.gameObject.activeInHierarchy
+		public static bool IsVisible(ShapeVisibilityTracker tracker, bool ignoreLocalCamera) => tracker.gameObject.activeInHierarchy
 				&& IsVisibleUsingCameraFrustum(tracker, ignoreLocalCamera).First
 				&& QSBPlayerManager.GetPlayersWithCameras(!ignoreLocalCamera)
 					.Any(x => VisibilityOccluder.CanYouSee(tracker, x.Camera.mainCamera.transform.position));
-		}
 
 		public static IEnumerable<PlayerInfo> GetEntangledPlayers(QuantumObject obj)
 		{
